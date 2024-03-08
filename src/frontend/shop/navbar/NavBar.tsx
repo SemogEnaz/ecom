@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './NavBar.css';
 
 export default function NavBar() {
@@ -32,12 +32,12 @@ export default function NavBar() {
     );
 }
 
-const SignInWindow = ({ setIsSigningIn }) => {
+const SignInWindow = ({ setIsSigningIn }: { setIsSigningIn: any}) => {
 
     const [isCreate, setIsCreate] = useState<boolean>(false);
 
     const makeRequest = async (formData: FormData, action: string): Promise<Response> => {
-        return await fetch(`api/shop/user?action=${action}`, {
+        return await fetch(`/shop/user?action=${action}`, {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json'
@@ -50,7 +50,10 @@ const SignInWindow = ({ setIsSigningIn }) => {
         });
     }
 
-    const submit = async (formData: FormData) => {
+    const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
     
         if (isCreate){
            const res = await makeRequest(formData, 'create');
@@ -83,9 +86,9 @@ const SignInWindow = ({ setIsSigningIn }) => {
 
             <h1>{isCreate ? 'Create Account' : 'Sign In'}</h1>
 
-            <form className="center col" action={submit}>
+            <form className="center col" onSubmit={submit}>
 
-                {isCreate ? 
+                {isCreate ?
                     <input type='text' name="userName" placeholder='Name' autoFocus required/> :
                     null}
 
